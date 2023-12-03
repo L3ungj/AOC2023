@@ -3,10 +3,10 @@ import os
 import sys
 
 if len(sys.argv) < 2:
-    print("Usage: py create.py <name>")
+    print("Usage: py run.py <name>")
     exit(0)
 
 fi = sys.argv[1]
 subprocess.call(['ghc', '-o', 't', os.path.join('src', f'{fi}.hs')])
 
-subprocess.call(['./t'])
+subprocess.call(['./t'], stdout=open("fo.txt", "w"), stderr=open("fe.txt", "w"))
