@@ -1,6 +1,5 @@
 import Data.Function ((&))
 import Debug.Trace (trace)
-import Data.Bits (Bits(shift))
 
 takeUntil :: (a -> Bool) -> [a] -> [a] -> [a]
 takeUntil pred lst ret
