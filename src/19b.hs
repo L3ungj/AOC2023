@@ -39,9 +39,8 @@ solve contents =
         workflows = takeWhile (/="") lns & map parseWorkflow & 
             Map.fromList
         
-        initItems = listArray (0, 4*maxn - 1) (replicate (4*maxn) True)
+        initItems = listArray ((0, 0), (3, maxn-1)) (replicate (4*maxn) True)
 
-        travRules :: ([((Int, Char, Int), String)], String) -> Array Int Bool -> Int
         travRules (rules, otw) items
             | null rules = trav otw items
             | otherwise = 
@@ -51,15 +50,13 @@ solve contents =
                 otwRules = fromJust $ Map.lookup otw workflows
                 ((a, c, n), target) = head rules
                 sat i = case c of
-                        '<' -> i' < n
-                        '>' -> i' > n
-                    where i' = (i `mod` maxn) + 1
+                        '<' -> i + 1 < n
+                        '>' -> i + 1 > n
                 satItems = items //
-                    [(i, False) | i <- [a*maxn..(a+1)*maxn-1], not $ sat i] 
+                    [((a, i), False) | i <- [0..maxn-1], not $ sat i] 
                 disItems = items //
-                    [(i, False) | i <- [a*maxn..(a+1)*maxn-1], sat i]
+                    [((a, i), False) | i <- [0..maxn-1], sat i]
 
-        trav :: String -> Array Int Bool -> Int
         trav workflow items = 
             case workflow of 
                 "R" -> 0
@@ -68,13 +65,9 @@ solve contents =
             where
                 rules = fromJust $ Map.lookup workflow workflows
 
-        cnt items = s1 * s2 * s3 * s4
-            where
-                l = elems items & map (\b -> if b then 1 else 0)
-                s1 = l & take maxn & sum
-                s2 = l & drop maxn & take maxn & sum
-                s3 = l & drop (2*maxn) & take maxn & sum
-                s4 = l & drop (3*maxn) & take maxn & sum
+        cnt items = product [length $ filter id
+            [items ! (a, i) | i <- [0..maxn-1]] | 
+            a <- [0..3]]
 
 main = do
     contents <- readFile "fi.txt"
