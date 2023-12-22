@@ -62,8 +62,6 @@ solve contents =
                 rules = fromJust $ Map.lookup workflow workflows
                 target = travRules rules item
 
-
-
 main = do
     contents <- readFile "fi.txt"
     print $ solve contents
